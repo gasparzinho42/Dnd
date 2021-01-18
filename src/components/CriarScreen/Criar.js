@@ -42,41 +42,43 @@ function Criar() {
       fetch(races)
         .then((response) => response.json())
         .then((response) => {
-          for (let i = 0; i < response['ability_bonuses'].length; i++) {
+          for (let i = 0; i < response.ability_bonuses.length; i++) {
             bonuses.push({
-              name: response['ability_bonuses'][i]['ability_score']['name'],
-              bonus: response['ability_bonuses'][i]['bonus'],
+              name: response.ability_bonuses[i].ability_score.name,
+              bonus: response.ability_bonuses[i].bonus,
             });
           }
           return setBonus(bonuses);
         });
     }
-    racesInfo();
+    racesInfo(); //Pega o nome da habilidade e o bônus a cada vez que o 'races' mudar no select.
   }, [races]);
 
-  function SubraceDesc() {
+  function SubraceDesc() { // Mostra a descrição da sub raça no modal ao apertar o balãozinho da interrogação.
     fetch(subracesInfo)
       .then((response) => response.json())
       .then((response) => {
-        setSubraceDesc(response['desc']);
+        setSubraceDesc(response.desc);
       });
   }
-  function checar() {
+
+  function checar() { // Checa se a raça selecionada no select tem sub raça, se sim ele mostra na tela o nome da sub raça.
     fetch(subraces)
-      .then((res) => res.json())
-      .then((res) => {
-        if (res['count'] > 0) {
-          sethidden(false);
-          const resultado = res['results'][0]['name'];
-          const subraceIndex = res['results'][0]['index'];
-          setSubraceName(subraceIndex);
-          setSubrace(resultado);
-          return;
-        } else {
-          sethidden(true);
-          setSubrace('');
-          return;
-        }
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.count > 0) {
+        sethidden(false);
+        const resultado = res.results[0].name;
+        const subraceIndex = res.results[0].index;
+        setSubraceName(subraceIndex);
+        setSubrace(resultado);
+        return;
+      } else {
+        sethidden(true);
+        setSubrace('');
+        return;
+      }
+     
       });
   }
 
@@ -91,14 +93,10 @@ function Criar() {
           }}
         />
         <Text style={styles.label}>Race</Text>
-        <Picker
+        <Picker //select para as raças.
           selectedValue={raca}
           style={styles.select}
-          onValueChange={
-            (checar(),
-            SubraceDesc(),
-            (itemValue, itemIndex) => setRaca(itemValue))
-          }>
+          onValueChange={(checar(), SubraceDesc(), (itemValue) => setRaca(itemValue))}>
           <Picker.Item label="Human" value="human" />
           <Picker.Item label="Halfling" value="halfling" />
           <Picker.Item label="Dragonborn" value="dragonborn" />

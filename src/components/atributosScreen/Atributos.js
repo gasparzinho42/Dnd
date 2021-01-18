@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Button} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import { color } from 'react-native-reanimated';
 import general from '../styles/general';
@@ -20,19 +20,20 @@ function Atributos({route}) {
   const [int, setInt] = useState(8);
   const [wis, setWis] = useState(8);
   const [cha, setCha] = useState(8);
+  const [se,setEq] = useState([])
   const [points, setPoints] = useState(27);
   const [color,setColor] = useState('purple');
   const {Name,Race,Class,Subrace,Bonus,} = route.params
+  const baseURL = 'https://www.dnd5eapi.co/api';
+  fetch(baseURL + `/starting-equipment/${Class}`)
+    .then((data) => data.json())
+    .then((data) => {
+      const array = [data.starting_equipment]
+      setEq(array)
+
+    }) 
   useEffect(()=>{
     points < 0 ? setColor('red') : null
-    console.log('====================================');
-    console.log(Name);
-    console.log(Class);
-    console.log(Race);
-    console.log(Subrace);
-    console.log(Bonus);
-    console.log('====================================');
-
 },[points])
   function plus(atr, set){
     var number = points - 1
@@ -134,9 +135,9 @@ function Atributos({route}) {
         {/* parte dos bônus */}
         <View style={styles.bonuses}>
           <Text style={styles.text}>Mind your Bonuses!</Text>
-          {Bonus.map((bonus)=>{
+          {Bonus.map((bonus, key)=>{
             return (
-            <View>
+            <View key={key}>
               <Text style={styles.text}>{bonus.name}: + {bonus.bonus}</Text>
             </View>)
           })}
@@ -145,10 +146,16 @@ function Atributos({route}) {
        
       </View>
       <View style={styles.equip}>
-        <Text >Name: {Name}</Text>
-        <Text >Race: {Race}</Text>
-        <Text >Class: {Class}</Text>
-        <Text style={{color: 'red', width:300, alignSelf:'center'}}>AQUI VAI SER A LISTA DE EQUIPAMENTOS DE ACORDO COM A CLASSE ESCOLHIDA</Text>
+        <Text style={styles.text}>Starting Equipment</Text>
+        {se.map((equipment, key) =>{
+          return(
+            <View key={key}>
+              <Text style={styles.text}> nome: {equipment [0].equipment.name} </Text>
+            </View>
+          )
+
+        })}
+        
       </View>
       
 
